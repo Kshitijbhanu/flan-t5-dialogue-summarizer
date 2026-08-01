@@ -44,8 +44,6 @@ The complete workflow includes:
 │       └── github_deploy.yml
 │
 ├── saved_models/
-├── pyproject.toml
-├── uv.lock
 └── README.md
 ```
 
