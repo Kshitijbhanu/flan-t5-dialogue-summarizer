@@ -41,3 +41,5 @@ async def summarize(request : SummarizeRequest):
     summary = get_prediction(request.text, max_new_tokens=request.max_length)
     log_inference(query = request.text, response = summary, model = MODEL_NAME)
     return SummarizeResponse(summary = summary)
+
+print("flan-t5-dialogsum is ready!")
