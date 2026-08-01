@@ -2,8 +2,8 @@ import os
 import streamlit as st
 import weave
 
-from inference.predictor import load_tokenizer_and_model, get_prediction
-from inference.logger import log_inference
+from predictor import load_tokenizer_and_model, get_prediction
+from logger import log_inference
 
 weave.init(os.getenv("WANDB_PROJECT", "flan-t5-dialogsum"))
 
