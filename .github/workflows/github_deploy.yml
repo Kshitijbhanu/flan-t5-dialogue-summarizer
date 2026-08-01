@@ -42,3 +42,8 @@ jobs:
           -t $ECR_REGISTRY/$ECR_REPOSITORY:latest \
           --push \
           -f inference/Dockerfile .
+
+      - name: Deploy to aws apprunner
+        run: |
+          aws apprunner start-deployment \
+            --service-arn ${{ secrets.APP_RUNNER_SERVICE_ARN }}
