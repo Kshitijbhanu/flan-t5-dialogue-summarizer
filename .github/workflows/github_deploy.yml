@@ -1,0 +1,49 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "inference/**"
+
+env:
+  AWS_REGION: ${{ secrtes.AWS_REGION }}
+  ECR_REPOSITORY: ${{ secrtes.ECR_REPOSITORY }}
+
+jobs:
+  my-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrtes.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrtes.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrtes.AWS_REGION }}
+
+      - name: Amazon ecr login
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Setup docker buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name:  Build and Push Docker Image
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker buildx build \
+          --platform linux/amd64 \
+          - t $ECR_REGISTRY/ECR_REPOSITORY: $IMAGE_TAG \
+          - t $ECR_REGISTRY/ECR_REPOSITORY: latest \
+          --push \
+          -f "inference/Dockerfile"
+
+      - name: Deploy aws apprunner
+        run: |
+          aws apprunner start-deployment \
+          --services-arn ${{ secrtes.APP_RUNNER_SERVICE_ARN }}
