@@ -42,4 +42,4 @@ async def summarize(request : SummarizeRequest):
     log_inference(query = request.text, response = summary, model = MODEL_NAME)
     return SummarizeResponse(summary = summary)
 
-print("flan-t5-dialogsum fastapi is ready")
+print("flan-t5-dialogsum is ready")
